@@ -1,0 +1,45 @@
+{% extends "main_app/base.html" %}
+
+{% block title %}Liste des sondages{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  <h1 class="mb-4">Liste des sondages</h1>
+
+  {% if user.is_authenticated %}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <p class="mb-0">
+        Connecté en tant que <strong>{{ user.username }}</strong>
+      </p>
+    </div>
+
+    <div class="mb-4">
+      <a href="{% url 'create_question' %}" class="btn btn-primary">Créer un nouveau sondage</a>
+    </div>
+  {% else %}
+    <p class="mb-4">
+      <a href="{% url 'login' %}">Connectez-vous</a> pour créer un sondage.
+    </p>
+  {% endif %}
+
+  <ul class="list-group">
+    {% for question in questions %}
+      <li class="list-group-item d-flex justify-content-between align-items-center mb-3 shadow-sm rounded">
+        <div>
+          <strong>{{ question.question_text }}</strong><br>
+          <small class="text-muted">Créé par {{ question.creator.username }}</small>
+        </div>
+
+        {% if user == question.creator %}
+          <div>
+            <a href="{% url 'edit_question' question.pk %}" class="btn btn-outline-secondary btn-sm me-2">Modifier</a>
+            <a href="{% url 'delete_question' question.pk %}" class="btn btn-outline-danger btn-sm">Supprimer</a>
+          </div>
+        {% endif %}
+      </li>
+    {% empty %}
+      <li class="list-group-item">Aucun sondage disponible.</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}

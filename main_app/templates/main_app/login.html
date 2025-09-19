@@ -1,0 +1,52 @@
+{% extends "main_app/base.html" %}
+{% load widget_tweaks %}
+
+{% block title %}Connexion{% endblock %}
+
+{% block content %}
+<h1 class="mb-4 mt-5 pt-5 text-center">Connexion</h1>
+
+<form method="post" class="mx-auto" style="max-width: 500px;" novalidate>
+    {% csrf_token %}
+    {% load widget_tweaks %}
+
+    {% if form.non_field_errors %}
+    <div class="alert alert-danger">
+        {% for error in form.non_field_errors %}
+            <div>{{ error }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="mb-3">
+        {{ form.username.label_tag }}
+        {{ form.username|add_class:"form-control" }}
+        {% if form.username.errors %}
+        <div class="text-danger">
+            {% for error in form.username.errors %}
+                <small>{{ error }}</small><br>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="mb-3">
+        {{ form.password.label_tag }}
+        {{ form.password|add_class:"form-control" }}
+        {% if form.password.errors %}
+        <div class="text-danger">
+            {% for error in form.password.errors %}
+                <small>{{ error }}</small><br>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+
+    <button type="submit" class="btn btn-primary w-100">Se connecter</button>
+</form>
+
+<p class="text-center mt-3">
+    Pas encore de compte ? <a href="{% url 'register' %}">Créer un compte</a>
+</p>
+{% endblock %}
+

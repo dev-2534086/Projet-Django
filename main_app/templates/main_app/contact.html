@@ -1,0 +1,28 @@
+{% extends "main_app/base.html" %}
+
+{% block title %}Contact{% endblock %}
+
+{% block content %}
+<h1 class="mb-4 mt-5 pt-5">Contactez-nous</h1>
+
+<form method="post" novalidate>
+  {% csrf_token %}
+  
+  <div class="mb-3">
+    {{ form.name.label_tag }}
+    {{ form.name }}
+  </div>
+
+  <div class="mb-3">
+    {{ form.email.label_tag }}
+    {{ form.email }}
+  </div>
+
+  <div class="mb-3">
+    {{ form.message.label_tag }}
+    {{ form.message }}
+  </div>
+
+  <button type="submit" class="btn btn-success">Envoyer</button>
+</form>
+{% endblock %}

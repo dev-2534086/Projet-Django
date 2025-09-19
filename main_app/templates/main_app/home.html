@@ -1,0 +1,96 @@
+{% extends "main_app/base.html" %}
+
+{% block title %}Accueil{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+<h1>Bienvenue {{ user.username }}</h1>
+{% endif %}
+
+<div class="d-flex align-items-center mb-4 gap-3 flex-wrap">
+
+  <span class="fw-semibold me-2">Trier par :</span>
+
+  <!-- Trier par Nom -->
+  {% if current_sort == 'question_text' and current_order == 'asc' %}
+    <a href="?sort=question_text&order=desc&page={{ page_obj.number }}" class="btn btn-primary btn-sm">Nom ↑</a>
+  {% elif current_sort == 'question_text' and current_order == 'desc' %}
+    <a href="?sort=question_text&order=asc&page={{ page_obj.number }}" class="btn btn-primary btn-sm">Nom ↓</a>
+  {% else %}
+    <a href="?sort=question_text&order=asc&page={{ page_obj.number }}" class="btn btn-outline-primary btn-sm">Nom</a>
+  {% endif %}
+
+  <!-- Trier par Date -->
+  {% if current_sort == 'pub_date' and current_order == 'asc' %}
+    <a href="?sort=pub_date&order=desc&page={{ page_obj.number }}" class="btn btn-primary btn-sm">Date ↑</a>
+  {% elif current_sort == 'pub_date' and current_order == 'desc' %}
+    <a href="?sort=pub_date&order=asc&page={{ page_obj.number }}" class="btn btn-primary btn-sm">Date ↓</a>
+  {% else %}
+    <a href="?sort=pub_date&order=asc&page={{ page_obj.number }}" class="btn btn-outline-primary btn-sm">Date</a>
+  {% endif %}
+
+  <!-- Trier par Réponses -->
+  {% if current_sort == 'response_count' and current_order == 'asc' %}
+    <a href="?sort=response_count&order=desc&page={{ page_obj.number }}" class="btn btn-primary btn-sm">Réponses ↑</a>
+  {% elif current_sort == 'response_count' and current_order == 'desc' %}
+    <a href="?sort=response_count&order=asc&page={{ page_obj.number }}" class="btn btn-primary btn-sm">Réponses ↓</a>
+  {% else %}
+    <a href="?sort=response_count&order=asc&page={{ page_obj.number }}" class="btn btn-outline-primary btn-sm">Réponses</a>
+  {% endif %}
+</div>
+
+
+<h2 class="mb-4 pt-5 mt-5">Liste des sondages</h2>
+
+{% if page_obj %}
+  <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+    {% for question in page_obj %}
+      <div class="col">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body d-flex flex-column">
+            <h5 class="card-title">{{ question.question_text }}</h5>
+            <p class="card-text text-muted mb-2">Publié le {{ question.pub_date|date:"d/m/Y H:i" }}</p>
+            <p class="card-text"><strong>{{ question.response_count }}</strong> réponse{% if question.response_count > 1 %}s{% endif %}</p>
+            <a href="{% url 'question_detail' question.id %}" class="btn btn-primary mt-auto">Voir le sondage</a>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <p class="lead">Aucun sondage disponible pour le moment.</p>
+{% endif %}
+
+<nav aria-label="Pagination">
+  <ul class="pagination justify-content-center mt-4">
+    {% if page_obj.has_previous %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Précédent</a>
+      </li>
+    {% else %}
+      <li class="page-item disabled">
+        <span class="page-link">Précédent</span>
+      </li>
+    {% endif %}
+
+    {% for num in page_obj.paginator.page_range %}
+      {% if page_obj.number == num %}
+        <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+      {% else %}
+        <li class="page-item"><a class="page-link" href="?sort={{ current_sort }}&order={{ current_order }}&page={{ num }}">{{ num }}</a></li>
+      {% endif %}
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+      <li class="page-item">
+        <a class="page-link" href="?sort={{ current_sort }}&order={{ current_order }}&page={{ page_obj.next_page_number }}">Suivant</a>
+      </li>
+    {% else %}
+      <li class="page-item disabled">
+        <span class="page-link">Suivant</span>
+      </li>
+    {% endif %}
+  </ul>
+</nav>
+{% endblock %}
+

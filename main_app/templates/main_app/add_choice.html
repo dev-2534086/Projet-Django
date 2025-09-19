@@ -1,0 +1,19 @@
+{% extends "main_app/base.html" %}
+
+{% block title %}Ajouter un choix{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Ajouter un choix à la question : <em>"{{ question.question_text }}"</em></h2>
+
+    <form method="post" class="mx-auto" style="max-width: 500px;">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary mt-3 w-100">Ajouter</button>
+    </form>
+
+    <p class="mt-4">
+        <a href="{% url 'edit_question' question.pk %}" class="text-decoration-none">&larr; Retour à la modification du sondage</a>
+    </p>
+</div>
+{% endblock %}

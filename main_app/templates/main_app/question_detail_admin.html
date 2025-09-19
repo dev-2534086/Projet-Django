@@ -1,0 +1,67 @@
+{% extends "main_app/base.html" %}
+{% load static %}
+{% block title %}Résultats - {{ question.question_text }}{% endblock %}
+
+{% block content %}
+<div class="container mt-5 pt-5 mb-5">
+  <div class="card shadow-lg border-0">
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <h2 class="mb-1"><i class="bi bi-bar-chart-fill me-2"></i>Résultats du sondage</h2>
+          <h5 class="text-muted">{{ question.question_text }}</h5>
+          <small class="text-muted">Publié le {{ question.pub_date|date:"d/m/Y H:i" }}</small>
+        </div>
+        <a href="{% url 'home' %}" class="btn btn-outline-primary">
+          <i class="bi bi-arrow-left"></i> Retour à l'accueil
+        </a>
+      </div>
+
+      {% if responses %}
+        <div class="table-responsive">
+          <table class="table table-hover align-middle">
+            <thead class="table-primary">
+              <tr>
+                <th scope="col"><i class="bi bi-person-fill"></i> Nom</th>
+                <th scope="col"><i class="bi bi-envelope-fill"></i> Email</th>
+                <th scope="col"><i class="bi bi-image-fill"></i> Image</th>
+                <th scope="col"><i class="bi bi-chat-left-quote-fill"></i> Réponse</th>
+                <th scope="col"><i class="bi bi-heart-fill"></i> Centres d'intérêt</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for response in responses %}
+                <tr>
+                  <td>{{ response.respondent.name }}</td>
+                  <td>{{ response.respondent.email|default:"-" }}</td>
+                  <td>
+                    {% if response.respondent.image %}
+                      <img src="{{ response.respondent.image.url }}" alt="Image" class="rounded-circle" style="height: 50px; width: 50px; object-fit: cover;">
+                    {% else %}
+                      <span class="text-muted">Aucune</span>
+                    {% endif %}
+                  </td>
+                  <td><span class="badge bg-success">{{ response.choice.choice_text }}</span></td>
+                  <td>
+                    {% if response.respondent.interests.exists %}
+                      {% for interest in response.respondent.interests.all %}
+                        <span class="badge bg-secondary me-1">{{ interest }}</span>
+                      {% endfor %}
+                    {% else %}
+                      <span class="text-muted">Aucun</span>
+                    {% endif %}
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <div class="alert alert-info mt-4">
+          <i class="bi bi-info-circle-fill me-2"></i>Aucune réponse n'a encore été soumise pour ce sondage.
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}
