@@ -79,14 +79,14 @@ def question_detail(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
 
     if request.user.is_authenticated:
-        # 🔐 Si utilisateur connecté : afficher les réponses à cette question
+        # Si utilisateur connecté : afficher les réponses à cette question
         responses = Response.objects.filter(choice__question=question).select_related('respondent', 'choice')
         return render(request, 'main_app/question_detail_admin.html', {
             'question': question,
             'responses': responses,
         })
 
-    # 🔓 Si non connecté : traitement du formulaire
+    # Si non connecté : traitement du formulaire
     if request.method == "POST":
         form = RespondentForm(request.POST, request.FILES, question=question)
         if form.is_valid():
@@ -96,22 +96,30 @@ def question_detail(request, question_id):
             image = form.cleaned_data.get('image')
 
             # Recherche ou création du respondent
-            respondent = Respondent.objects.filter(email=email).first() if email else None
+            respondent, created = Respondent.objects.get_or_create(
+                email=email if email else None,
+                defaults={'name': name, 'image': image}
+            )
 
-            if respondent is None:
-                respondent = Respondent.objects.create(name=name, email=email)
-            else:
+            # Si le respondent existait déjà, mettre à jour le nom et l'image si nécessaire
+            if not created:
+                updated = False
                 if respondent.name != name:
                     respondent.name = name
+                    updated = True
                 if image:
                     respondent.image = image
-                respondent.save()
+                    updated = True
+                if updated:
+                    respondent.save()
 
+            # Mettre à jour les centres d'intérêt
             if interests:
                 respondent.interests.set(interests)
             else:
                 respondent.interests.clear()
 
+            # Créer la réponse
             choice = form.cleaned_data['choice']
             Response.objects.create(respondent=respondent, choice=choice)
 
@@ -123,6 +131,7 @@ def question_detail(request, question_id):
         'question': question,
         'form': form,
     })
+
 
 
 def register(request):
@@ -140,7 +149,7 @@ def register(request):
 @login_required
 def question_list(request):
     # Questions créées par l'utilisateur connecté
-    questions = Question.objects.filter(creator=request.user).order_by('-pub_date')
+    questions = Question.objects.filter(creator=request.user).order_by('-pub_date').order_by('question_text')
     return render(request, 'main_app/question_list.html', {'questions': questions})
 
 # Créer un sondage

@@ -27,7 +27,7 @@
       <li class="list-group-item d-flex justify-content-between align-items-center mb-3 shadow-sm rounded">
         <div>
           <strong>{{ question.question_text }}</strong><br>
-          <small class="text-muted">Créé par {{ question.creator.username }}</small>
+          <small class="text-muted">Créé le {{ question.pub_date|date:"d/m/Y H:i" }}</small>
         </div>
 
         {% if user == question.creator %}
