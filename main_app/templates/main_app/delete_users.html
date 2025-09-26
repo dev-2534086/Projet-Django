@@ -1,0 +1,39 @@
+{% extends 'main_app/base.html' %}
+
+{% block title %}Supprimer un utilisateur{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h2 class="card-title mb-4 text-center">Supprimer des utilisateurs</h2>
+
+          {% if users %}
+            <ul class="list-group">
+              {% for user in users %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                  <span>{{ user.username }}</span>
+                  <form method="post" onsubmit="return confirm('Supprimer {{ user.username }} ?');">
+                    {% csrf_token %}
+                    <input type="hidden" name="user_id" value="{{ user.id }}">
+                    <button type="submit" class="btn btn-sm btn-danger">Supprimer</button>
+                  </form>
+                </li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <div class="alert alert-info text-center">
+              Aucun utilisateur à afficher.
+            </div>
+          {% endif %}
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

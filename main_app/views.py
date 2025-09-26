@@ -5,13 +5,16 @@ from django.http import HttpResponse, HttpResponseForbidden
 from django.db.models import Count
 from django.core.paginator import Paginator
 
-from main_app.forms import ChoiceForm, ContactForm, QuestionForm, RespondentForm
+from main_app.forms import ChoiceForm, ContactForm, QuestionForm, RespondentForm, UserUpdateForm
 from .models import Choice, Question, Respondent, Response
+from django.contrib.auth.models import User
 
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth import login
 
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
 
 def home(request):
     sort_param = request.GET.get('sort', 'pub_date')  # par défaut tri par date
@@ -20,7 +23,7 @@ def home(request):
     order_prefix = '-' if sort_order == 'desc' else ''
     sort_field = f"{order_prefix}{sort_param}"
 
-    # 🔸 Afficher selon l'état de connexion
+    # Afficher selon l'état de connexion
     if request.user.is_authenticated:
         questions = Question.objects.filter(creator=request.user)
     else:
@@ -213,3 +216,43 @@ def delete_choice(request, pk):
     question_id = choice.question.pk
     choice.delete()
     return redirect('edit_question', pk=question_id)
+
+# Infos sur le compte
+@login_required
+def edit_account(request):
+    if request.method == 'POST':
+        user_form = UserUpdateForm(request.POST, instance=request.user)
+        password_form = PasswordChangeForm(user=request.user, data=request.POST)
+
+        if 'update_profile' in request.POST and user_form.is_valid():
+            user_form.save()
+            return redirect('account')
+
+        elif 'change_password' in request.POST and password_form.is_valid():
+            user = password_form.save()
+            update_session_auth_hash(request, user)
+            return redirect('account')
+    else:
+        user_form = UserUpdateForm(instance=request.user)
+        password_form = PasswordChangeForm(user=request.user)
+
+    return render(request, 'main_app/account.html', {
+        'user_form': user_form,
+        'password_form': password_form
+    })
+
+def is_admin(user):
+    return user.groups.filter(name='admin').exists()
+
+@login_required
+@user_passes_test(is_admin)
+def delete_users(request):
+    users = User.objects.exclude(id=request.user.id).exclude(username='Admin').order_by('username')
+
+    if request.method == 'POST':
+        user_id = request.POST.get('user_id')
+        user_to_delete = get_object_or_404(User, id=user_id)
+        user_to_delete.delete()
+        return redirect('delete_users')
+
+    return render(request, 'main_app/delete_users.html', {'users': users})

@@ -16,13 +16,13 @@
         <li class="nav-item">
           <a class="nav-link active" aria-current="page" href="{% url 'home' %}">Accueil</a>
         </li>
+        {% if not user.is_authenticated %}
         <li class="nav-item">
           <a class="nav-link" href="{% url 'about' %}">À propos</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="{% url 'contact' %}">Contactez-nous</a>
         </li>
-        {% if not user.is_authenticated %}
         <li class="nav-item">
           <a class="btn btn-outline-primary px-3" href="{% url 'login' %}">Se connecter</a>
         </li>
@@ -33,6 +33,16 @@
         <li class="nav-item">
           <a class="nav-link" href="{% url 'question_list' %}">Mes sondages</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'account' %}">Mon compte</a>
+        </li>
+        {% for group in user.groups.all %}
+          {% if group.name == "admin" %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'delete_users' %}">Gestion des comptes</a>
+            </li>
+          {% endif %}
+        {% endfor %}
         <form action="{% url 'logout' %}" method="post" >
           {% csrf_token %}
           <button type="submit" class="btn btn-outline-danger btn-sm">Se déconnecter</button>
