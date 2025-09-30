@@ -1,6 +1,14 @@
 {% extends "main_app/base.html" %}
+{% load i18n %}
 
-{% block title %}{% if form.instance.pk %}Modifier{% else %}Créer{% endif %} un sondage{% endblock %}
+{% block title %}
+{% if form.instance.pk %}
+  {% trans "Modifier" %}
+{% else %}
+  {% trans "Créer" %}
+{% endif %}
+{% trans " un sondage" %}
+{% endblock %}
 
 {% block content %}
 <div class="container mt-5">
@@ -8,31 +16,35 @@
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit" class="btn btn-success">
-            {% if form.instance.pk %}Mettre à jour{% else %}Créer{% endif %}
+            {% if form.instance.pk %}
+                {% trans "Mettre à jour" %}
+            {% else %}
+                {% trans "Créer" %}
+            {% endif %}
         </button>
     </form>
 
     {% if form.instance.pk %}
-        <h2>Choix pour cette question</h2>
+        <h2>{% trans "Choix pour cette question" %}</h2>
         <ul class="list-group mb-3">
             {% for choice in form.instance.choice_set.all %}
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     {{ choice.choice_text }}
                     <form action="{% url 'delete_choice' choice.pk %}" method="post" style="margin:0;">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-danger btn-sm">Supprimer</button>
+                        <button type="submit" class="btn btn-danger btn-sm">{% trans "Supprimer" %}</button>
                     </form>
                 </li>
             {% empty %}
-                <li class="list-group-item">Aucun choix pour cette question.</li>
+                <li class="list-group-item">{% trans "Aucun choix pour cette question." %}</li>
             {% endfor %}
         </ul>
 
-        <a href="{% url 'add_choice' form.instance.pk %}" class="btn btn-primary">Ajouter un choix</a>
+        <a href="{% url 'add_choice' form.instance.pk %}" class="btn btn-primary">{% trans "Ajouter un choix" %}</a>
     {% endif %}
 
     <p class="mt-4">
-        <a href="{% url 'question_list' %}" class="text-decoration-none">&larr; Retour à la liste</a>
+        <a href="{% url 'question_list' %}" class="text-decoration-none">&larr; {% trans "Retour à la liste" %}</a>
     </p>
 </div>
 {% endblock %}

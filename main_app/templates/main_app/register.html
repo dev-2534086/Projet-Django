@@ -1,12 +1,11 @@
 {% extends "main_app/base.html" %}
-
-{% block title %}Inscription{% endblock %}
-
-{% block content %}
+{% load i18n %}
 {% load widget_tweaks %}
 
-<h1 class="mb-4 mt-5 pt-5 text-center">Créer un compte</h1>
+{% block title %}{% trans "Inscription" %}{% endblock %}
 
+{% block content %}
+<h1 class="mb-4 mt-5 pt-5 text-center">{% trans "Créer un compte" %}</h1>
 
 <form method="post" class="mx-auto" style="max-width: 500px;" novalidate>
     {% csrf_token %}
@@ -41,10 +40,10 @@
         {% endif %}
     </div>
 
-    <button type="submit" class="btn btn-primary w-100">S'inscrire</button>
+    <button type="submit" class="btn btn-primary w-100">{% trans "S'inscrire" %}</button>
 </form>
 
 <p class="text-center mt-3">
-    Déjà un compte ? <a href="{% url 'login' %}">Connexion</a>
+    {% trans "Déjà un compte ?" %} <a href="{% url 'login' %}">{% trans "Connexion" %}</a>
 </p>
 {% endblock %}

@@ -1,57 +1,76 @@
+{% load i18n %}
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{% block title %}Mon sondage{% endblock %}</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <title>{% block title %}{% trans "Mon sondage" %}{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm sticky-top">
-  <div class="container">
-    <a class="navbar-brand fw-bold" href="{% url 'home' %}">Sondage</a>
-    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-      <ul class="navbar-nav gap-3">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="{% url 'home' %}">Accueil</a>
-        </li>
-        {% if not user.is_authenticated %}
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'about' %}">À propos</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'contact' %}">Contactez-nous</a>
-        </li>
-        <li class="nav-item">
-          <a class="btn btn-outline-primary px-3" href="{% url 'login' %}">Se connecter</a>
-        </li>
-        <li class="nav-item">
-          <a class="btn btn-primary px-3 text-white" href="{% url 'register' %}">S'inscrire</a>
-        </li>
-        {% else%}
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'question_list' %}">Mes sondages</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'account' %}">Mon compte</a>
-        </li>
-        {% for group in user.groups.all %}
-          {% if group.name == "admin" %}
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'delete_users' %}">Gestion des comptes</a>
-            </li>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm sticky-top">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="{% url 'home' %}">{% trans "Sondage" %}</a>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul class="navbar-nav gap-3">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="{% url 'home' %}">{% trans "Accueil" %}</a>
+          </li>
+          {% if not user.is_authenticated %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'about' %}">{% trans "À propos" %}</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'contact' %}">{% trans "Contactez-nous" %}</a>
+          </li>
+          <li class="nav-item">
+            <a class="btn btn-outline-primary px-3" href="{% url 'login' %}">{% trans "Se connecter" %}</a>
+          </li>
+          <li class="nav-item">
+            <a class="btn btn-primary px-3 text-white" href="{% url 'register' %}">{% trans "S'inscrire" %}</a>
+          </li>
+          {% else %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'question_list' %}">{% trans "Mes sondages" %}</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'account' %}">{% trans "Mon compte" %}</a>
+          </li>
+          {% for group in user.groups.all %}
+            {% if group.name == "admin" %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'delete_users' %}">{% trans "Gestion des comptes" %}</a>
+              </li>
+            {% endif %}
+          {% endfor %}
+          <form action="{% url 'logout' %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-outline-danger btn-sm">{% trans "Se déconnecter" %}</button>
+          </form>
           {% endif %}
-        {% endfor %}
-        <form action="{% url 'logout' %}" method="post" >
-          {% csrf_token %}
-          <button type="submit" class="btn btn-outline-danger btn-sm">Se déconnecter</button>
-        </form>
-        {% endif %}
-      </ul>
+
+          <!-- Sélecteur de langue -->
+          <li class="nav-item">
+            <form action="{% url 'set_language' %}" method="post">
+              {% csrf_token %}
+              <input name="next" type="hidden" value="{{ request.path }}">
+              <select name="language" class="form-select form-select-sm" onchange="this.form.submit()">
+                {% get_current_language as LANGUAGE_CODE %}
+                {% get_available_languages as LANGUAGES %}
+                {% for lang in LANGUAGES %}
+                  <option value="{{ lang.0 }}"{% if lang.0 == LANGUAGE_CODE %} selected{% endif %}>
+                    {{ lang.1 }}
+                  </option>
+                {% endfor %}
+              </select>
+            </form>
+          </li>
+          <!-- fin sélecteur -->
+        </ul>
+      </div>
     </div>
-  </div>
-</nav>
+  </nav>  
 
 <div class="container mt-5 pt-4">
     {% block content %}

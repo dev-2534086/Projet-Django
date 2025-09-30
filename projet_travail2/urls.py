@@ -24,6 +24,7 @@ from projet_travail2 import settings
 urlpatterns = [
     path("", include("main_app.urls")),
     path("admin/", admin.site.urls),
+    path('i18n/', include('django.conf.urls.i18n')),
 ]
 
 if settings.DEBUG:

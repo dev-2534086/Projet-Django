@@ -1,4 +1,6 @@
 {% extends "main_app/base.html" %}
+{% load i18n %}
+
 {% block title %}{{ question.question_text }}{% endblock %}
 
 {% block content %}
@@ -6,7 +8,7 @@
   <div class="card shadow-sm">
     <div class="card-header bg-primary text-white">
       <h3 class="mb-0">{{ question.question_text }}</h3>
-      <small>Publié le {{ question.pub_date|date:"d/m/Y H:i" }}</small>
+      <small>{% trans "Publié le" %} {{ question.pub_date|date:"d/m/Y H:i" }}</small>
     </div>
     <div class="card-body">
       <form method="post" enctype="multipart/form-data" novalidate>
@@ -14,7 +16,7 @@
 
         <!-- Nom -->
         <div class="mb-3">
-          <label for="{{ form.name.id_for_label }}" class="form-label">Nom <span class="text-danger">*</span></label>
+          <label for="{{ form.name.id_for_label }}" class="form-label">{% trans "Nom" %} <span class="text-danger">*</span></label>
           {{ form.name }}
           {% if form.name.errors %}
             <div class="text-danger small">{{ form.name.errors }}</div>
@@ -23,7 +25,7 @@
 
         <!-- Email -->
         <div class="mb-3">
-          <label for="{{ form.email.id_for_label }}" class="form-label">Email</label>
+          <label for="{{ form.email.id_for_label }}" class="form-label">{% trans "Email" %}</label>
           {{ form.email }}
           {% if form.email.errors %}
             <div class="text-danger small">{{ form.email.errors }}</div>
@@ -32,7 +34,7 @@
 
         <!-- Choix (menu déroulant) -->
         <div class="mb-3">
-          <label for="{{ form.choice.id_for_label }}" class="form-label">Votre réponse <span class="text-danger">*</span></label>
+          <label for="{{ form.choice.id_for_label }}" class="form-label">{% trans "Votre réponse" %} <span class="text-danger">*</span></label>
           {{ form.choice }}
           {% if form.choice.errors %}
             <div class="text-danger small">{{ form.choice.errors }}</div>
@@ -41,7 +43,7 @@
 
         <!-- Centres d'intérêt (cases à cocher) -->
         <div class="mb-3">
-          <label class="form-label">Centres d'intérêt</label>
+          <label class="form-label">{% trans "Centres d'intérêt" %}</label>
           <div>
             {% for checkbox in form.interests %}
               <div class="form-check form-check-inline">
@@ -57,7 +59,7 @@
 
         <!-- Image -->
         <div class="mb-3">
-          <label for="{{ form.image.id_for_label }}" class="form-label">Photo (optionnel)</label>
+          <label for="{{ form.image.id_for_label }}" class="form-label">{% trans "Photo (optionnel)" %}</label>
           {{ form.image }}
           {% if form.image.errors %}
             <div class="text-danger small">{{ form.image.errors }}</div>
@@ -65,7 +67,7 @@
         </div>
 
         <!-- Bouton -->
-        <button type="submit" class="btn btn-success">Soumettre ma réponse</button>
+        <button type="submit" class="btn btn-success">{% trans "Soumettre ma réponse" %}</button>
       </form>
     </div>
   </div>

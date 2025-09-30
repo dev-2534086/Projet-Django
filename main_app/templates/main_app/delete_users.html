@@ -1,6 +1,7 @@
 {% extends 'main_app/base.html' %}
+{% load i18n %}
 
-{% block title %}Supprimer un utilisateur{% endblock %}
+{% block title %}{% trans "Supprimer un utilisateur" %}{% endblock %}
 
 {% block content %}
 <div class="container mt-5">
@@ -9,24 +10,24 @@
 
       <div class="card shadow-sm">
         <div class="card-body">
-          <h2 class="card-title mb-4 text-center">Supprimer des utilisateurs</h2>
+          <h2 class="card-title mb-4 text-center">{% trans "Supprimer des utilisateurs" %}</h2>
 
           {% if users %}
             <ul class="list-group">
               {% for user in users %}
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                   <span>{{ user.username }}</span>
-                  <form method="post" onsubmit="return confirm('Supprimer {{ user.username }} ?');">
+                  <form method="post" onsubmit="return confirm('{% blocktrans with username=user.username %}Supprimer {{ username }} ?{% endblocktrans %}');">
                     {% csrf_token %}
                     <input type="hidden" name="user_id" value="{{ user.id }}">
-                    <button type="submit" class="btn btn-sm btn-danger">Supprimer</button>
+                    <button type="submit" class="btn btn-sm btn-danger">{% trans "Supprimer" %}</button>
                   </form>
                 </li>
               {% endfor %}
             </ul>
           {% else %}
             <div class="alert alert-info text-center">
-              Aucun utilisateur à afficher.
+              {% trans "Aucun utilisateur à afficher." %}
             </div>
           {% endif %}
 

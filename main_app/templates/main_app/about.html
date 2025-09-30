@@ -1,19 +1,22 @@
 {% extends "main_app/base.html" %}
+{% load i18n %}
 
-{% block title %}À propos{% endblock %}
+{% block title %}{% trans "À propos" %}{% endblock %}
 
 {% block content %}
 <div class="container my-5">
     <div class="row align-items-center">
         <div class="col-md-6">
-            <h1 class="mb-4">À propos de nous</h1>
-            <p>Bienvenue sur <strong>notre site de sondages</strong> !</p>
-            <p>Notre objectif est de vous permettre de participer facilement à des sondages en ligne, de manière simple et intuitive.</p>
-            <p>Nous croyons que chaque avis compte et nous espérons que notre plateforme vous sera utile pour partager vos idées.</p>
-            <p>Pour toute question ou suggestion, n’hésitez pas à nous <a href="/contact">contacter</a>.</p>
+            <h1 class="mb-4">{% trans "À propos de nous" %}</h1>
+            <p>{% trans "Bienvenue sur" %} <strong>{% trans "notre site de sondages" %}</strong> !</p>
+            <p>{% trans "Notre objectif est de vous permettre de participer facilement à des sondages en ligne, de manière simple et intuitive." %}</p>
+            <p>{% trans "Nous croyons que chaque avis compte et nous espérons que notre plateforme vous sera utile pour partager vos idées." %}</p>
+            <p>
+                {% blocktrans %}Pour toute question ou suggestion, n’hésitez pas à nous <a href="/contact">contacter</a>.{% endblocktrans %}
+            </p>
         </div>
         <div class="col-md-6 text-center">
-            <img src="../../static/images/about.webp" class="img-fluid rounded shadow" alt="Sondage en ligne">
+            <img src="../../static/images/about.webp" class="img-fluid rounded shadow" alt="{% trans 'Sondage en ligne' %}">
         </div>
     </div>
 </div>

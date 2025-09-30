@@ -1,19 +1,24 @@
 {% extends "main_app/base.html" %}
+{% load i18n %}
 
-{% block title %}Ajouter un choix{% endblock %}
+{% block title %}{% trans "Ajouter un choix" %}{% endblock %}
 
 {% block content %}
 <div class="container mt-5">
-    <h2 class="mb-4">Ajouter un choix à la question : <em>"{{ question.question_text }}"</em></h2>
+    <h2 class="mb-4">
+        {% blocktrans %}Ajouter un choix à la question : <em>"{{ question.question_text }}"</em>{% endblocktrans %}
+    </h2>
 
     <form method="post" class="mx-auto" style="max-width: 500px;">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit" class="btn btn-primary mt-3 w-100">Ajouter</button>
+        <button type="submit" class="btn btn-primary mt-3 w-100">{% trans "Ajouter" %}</button>
     </form>
 
     <p class="mt-4">
-        <a href="{% url 'edit_question' question.pk %}" class="text-decoration-none">&larr; Retour à la modification du sondage</a>
-    </p>
+        <a href="{% url 'edit_question' question.pk %}" class="text-decoration-none">
+            {% blocktrans %}← Retour à la modification du sondage{% endblocktrans %}
+        </a>
+    </p>    
 </div>
 {% endblock %}

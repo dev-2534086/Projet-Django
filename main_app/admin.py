@@ -1,11 +1,14 @@
 from django.contrib.auth.models import Group, User
 from django.contrib.auth.admin import GroupAdmin
 from django.contrib import admin
-
 from django import forms
-from .models import ContactMessage, Respondent, Interest, Question, Choice, Response
 from django.utils.html import format_html
 
+from .models import ContactMessage, Respondent, Interest, Question, Choice, Response
+from modeltranslation.admin import TranslationAdmin
+
+
+# === Respondent ===
 @admin.register(Respondent)
 class RespondentAdmin(admin.ModelAdmin):
     list_display = ('name', 'email', 'submitted_at', 'get_interests', 'thumbnail')
@@ -16,14 +19,12 @@ class RespondentAdmin(admin.ModelAdmin):
         return ", ".join([interest.name for interest in obj.interests.all()])
     get_interests.short_description = "Centres d'intérêt"
 
-    # Miniature pour list_display
     def thumbnail(self, obj):
         if obj.image:
             return format_html('<img src="{}" width="50" height="50" style="object-fit:cover;" />', obj.image.url)
         return "-"
     thumbnail.short_description = 'Miniature'
 
-    # Aperçu grand format pour formulaire d'édition
     def image_preview(self, obj):
         if obj.image:
             return format_html('<img src="{}" width="300" style="margin-top:10px;" />', obj.image.url)
@@ -31,6 +32,7 @@ class RespondentAdmin(admin.ModelAdmin):
     image_preview.short_description = 'Aperçu (image actuelle)'
 
 
+# === Response ===
 @admin.register(Response)
 class ResponseAdmin(admin.ModelAdmin):
     list_display = ('respondent', 'get_question', 'get_choice', 'answered_at')
@@ -47,6 +49,7 @@ class ResponseAdmin(admin.ModelAdmin):
     get_choice.short_description = 'Réponse'
 
 
+# === Group personnalisé ===
 class CustomGroupAdminForm(forms.ModelForm):
     users = forms.ModelMultipleChoiceField(
         queryset=User.objects.all(),
@@ -72,15 +75,27 @@ class CustomGroupAdminForm(forms.ModelForm):
             self.save_m2m()
         return group
 
+
 class CustomGroupAdmin(GroupAdmin):
     form = CustomGroupAdminForm
     filter_horizontal = ['permissions'] 
 
-admin.site.unregister(Group)
 
-# Pour l'admin
-admin.site.register(Question)
-admin.site.register(Choice)
-admin.site.register(Interest)
-admin.site.register(ContactMessage)
+admin.site.unregister(Group)
 admin.site.register(Group, CustomGroupAdmin)
+
+
+# === Autres modèles traduits ===
+@admin.register(Question)
+class QuestionAdmin(TranslationAdmin):
+    list_display = ('question_text', 'pub_date')
+
+
+@admin.register(Choice)
+class ChoiceAdmin(TranslationAdmin):
+    list_display = ('choice_text', 'question', 'votes')
+
+
+@admin.register(Interest)
+class InterestAdmin(TranslationAdmin):
+    list_display = ('name',)

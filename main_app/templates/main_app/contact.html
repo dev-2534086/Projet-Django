@@ -1,9 +1,10 @@
 {% extends "main_app/base.html" %}
+{% load i18n %}
 
-{% block title %}Contact{% endblock %}
+{% block title %}{% trans "Contact" %}{% endblock %}
 
 {% block content %}
-<h1 class="mb-4 mt-5 pt-5">Contactez-nous</h1>
+<h1 class="mb-4 mt-5 pt-5">{% trans "Contactez-nous" %}</h1>
 
 <form method="post" novalidate>
   {% csrf_token %}
@@ -23,6 +24,6 @@
     {{ form.message }}
   </div>
 
-  <button type="submit" class="btn btn-success">Envoyer</button>
+  <button type="submit" class="btn btn-success">{% trans "Envoyer" %}</button>
 </form>
 {% endblock %}
