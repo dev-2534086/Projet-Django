@@ -5,7 +5,7 @@
 
 {% block content %}
 {% if user.is_authenticated %}
-<h1>{% blocktrans %}Bienvenue {{ user.username }}{% endblocktrans %}</h1>
+<h1>{% trans "Bienvenue" %} {{ user.username }}</h1>
 {% endif %}
 
 <div class="d-flex align-items-center mb-4 gap-3 flex-wrap">

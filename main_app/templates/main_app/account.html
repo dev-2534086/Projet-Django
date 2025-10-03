@@ -10,7 +10,7 @@
 
   {% if user.is_authenticated %}
     <div class="alert alert-info">
-      {% blocktrans %}Connecté en tant que <strong>{{ user.username }}</strong>{% endblocktrans %}
+      {% blocktrans %}Connecté en tant que {% endblocktrans %}<strong> {{ user.username }}</strong>
     </div>
   {% endif %}
 

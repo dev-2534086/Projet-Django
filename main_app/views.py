@@ -135,7 +135,6 @@ def question_detail(request, question_id):
         'form': form,
     })
 
-
 def register(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)

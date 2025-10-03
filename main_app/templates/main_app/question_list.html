@@ -10,7 +10,7 @@
   {% if user.is_authenticated %}
     <div class="d-flex justify-content-between align-items-center mb-4">
       <p class="mb-0">
-        {% blocktrans %}Connecté en tant que <strong>{{ user.username }}</strong>{% endblocktrans %}
+        {% blocktrans %}Connecté en tant que {% endblocktrans %} <strong>{{ user.username }}</strong>
       </p>
     </div>
 
@@ -28,7 +28,7 @@
       <li class="list-group-item d-flex justify-content-between align-items-center mb-3 shadow-sm rounded">
         <div>
           <strong>{{ question.question_text }}</strong><br>
-          <small class="text-muted">{% blocktrans %}Créé le {{ question.pub_date|date:"d/m/Y H:i" }}{% endblocktrans %}</small>
+          <small class="text-muted">{% blocktrans %}Créé le {% endblocktrans %} {{ question.pub_date|date:"d/m/Y H:i" }}</small>
         </div>
 
         {% if user == question.creator %}
